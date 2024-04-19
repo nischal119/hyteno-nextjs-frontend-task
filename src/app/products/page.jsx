@@ -1,12 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { Box, Button, Modal } from "@mui/material";
 import axios from "axios";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { Box, Button, Modal, MenuItem, Select, Rating } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import ProductCard from "../components/ProductCard";
+import ProductFilters from "../components/ProductFilters";
+import { useRouter } from "next/router";
+import { FcCancel } from "react-icons/fc";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -16,6 +15,8 @@ const Home = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestionValue, setSuggestionValue] = useState("");
   const [sortOrder, setSortOrder] = useState(null);
+
+  // const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +89,11 @@ const Home = () => {
   } else if (sortOrder === "desc") {
     sortedProducts = sortedProducts.sort((a, b) => b.price - a.price);
   }
-
+  //for cart
+  const handleAddToCart = (product) => {
+    setCart([...cart, product]);
+    router.push("/cart");
+  };
   return (
     <>
       <div
@@ -99,148 +104,103 @@ const Home = () => {
           flexDirection: "column",
         }}
       >
-        <form className="max-w-md mx-auto mt-5" onChange={handleInputChange}>
-          <label
-            htmlFor="default-search"
-            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-          >
-            Search
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search products"
-              value={suggestionValue}
-              style={{ overflow: "hidden" }}
-            />
-
-            <button
-              onClick={handleOpen}
-              className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            gap: "10px",
+          }}
+        >
+          <form className="max-w-md mx-auto mt-5" onChange={handleInputChange}>
+            <label
+              htmlFor="default-search"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
-              Filter
-            </button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 400,
-                  bgcolor: "background.paper",
-                  border: "2px solid #000",
-                  boxShadow: 24,
-                  p: 4,
-                  display: "flex",
-                  justifyContent: "center",
-                  // alignItems: "center",
-                  flexDirection: "column",
-                }}
+              Search
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+
+              <input
+                type="search"
+                id="default-search"
+                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search products"
+                value={searchValue}
+                style={{ overflow: "hidden" }}
+              />
+
+              <button
+                onClick={handleOpen}
+                className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{ justifySelf: "flex-start" }}
-                >
-                  Filter by Rating
-                </Typography>
+                Filter
+              </button>
 
-                <Select
-                  value={ratingFilter}
-                  onChange={handleRatingChange}
-                  displayEmpty
-                  inputProps={{ "aria-label": "rating" }}
-                  style={{ marginTop: "10px", width: "100%" }}
-                >
-                  <MenuItem value={null}>All Ratings</MenuItem>
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <MenuItem key={rating} value={rating}>
-                      {rating <= 4
-                        ? `Rating ${rating} and above`
-                        : `Rating ${rating}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{ marginTop: "10px", width: "100%" }}
-                >
-                  Filter by categories
-                </Typography>
-                <Select
-                  value={categoryFilter}
-                  onChange={handleCategoryChange}
-                  displayEmpty
-                  inputProps={{ "aria-label": "category" }}
-                  style={{ marginTop: "10px", width: "100%" }}
-                >
-                  <MenuItem value="">All Categories</MenuItem>
-                  {getUniqueCategories().map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{ marginTop: "10px", width: "100%" }}
-                >
-                  Filter by price
-                </Typography>
-                <Select
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  displayEmpty
-                  inputProps={{ "aria-label": "sort-order" }}
-                  style={{ marginTop: "10px", width: "100%" }}
-                >
-                  <MenuItem value="asc">Price: Low to High</MenuItem>
-                  <MenuItem value="desc">Price: High to Low</MenuItem>
-                </Select>
-
-                <Button
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box
                   sx={{
-                    marginTop: "20px",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    bgcolor: "background.paper",
+                    border: "2px solid #000",
+                    boxShadow: 24,
+                    p: 4,
+                    display: "flex",
+                    justifyContent: "center",
+                    // alignItems: "center",
+                    flexDirection: "column",
                   }}
-                  variant="contained"
-                  onClick={handleClose}
                 >
-                  Done
-                </Button>
-              </Box>
-            </Modal>
-          </div>
-        </form>
+                  <ProductFilters
+                    ratingFilter={ratingFilter}
+                    handleRatingChange={handleRatingChange}
+                    categoryFilter={categoryFilter}
+                    handleCategoryChange={handleCategoryChange}
+                    sortOrder={sortOrder}
+                    handleSortOrderChange={(e) => setSortOrder(e.target.value)}
+                    handleClose={handleClose}
+                    getUniqueCategories={getUniqueCategories}
+                  />
+                </Box>
+              </Modal>
+            </div>
+          </form>
+          {searchValue && (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => setSearchValue("")}
+            >
+              Clear
+            </Button>
+          )}
+        </div>
         {searchValue && autocompleteSuggestions.length > 0 && (
           <>
             <h2>Suggestions</h2>
@@ -256,7 +216,10 @@ const Home = () => {
                   marginTop: "10px",
                   overflow: "hidden",
                   borderRadius: "5px",
-                  height: "30px",
+                  height: "50px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 onClick={() => {
                   setSearchValue(suggestion);
@@ -270,7 +233,6 @@ const Home = () => {
           </>
         )}
       </div>
-
       <div
         style={{
           display: "flex",
@@ -281,68 +243,11 @@ const Home = () => {
       >
         {sortedProducts.length > 0 ? (
           sortedProducts.map((product) => (
-            <div key={product.id}>
-              <Card
-                key={product.id}
-                className="card"
-                sx={{
-                  maxWidth: 345,
-                  borderRadius: "10px",
-                  margin: "20px 10px",
-                  minHeight: "400px",
-                }}
-              >
-                <CardMedia
-                  className="product-card"
-                  component="img"
-                  alt={product.title}
-                  height="140"
-                  src={product.image}
-                  sx={{
-                    objectFit: "contain",
-                    height: "150px",
-                    padding: "10px",
-                  }}
-                />
-
-                <CardContent>
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "100%",
-                      gap: "1rem",
-                      alignItems: "center",
-                      // justifyContent: "center",
-                    }}
-                  >
-                    <Typography gutterBottom variant="h5" component="div">
-                      {product.title.slice(0, 10)}...
-                      <Rating
-                        name="read-only"
-                        value={product.rating.rate}
-                        readOnly
-                        precision={0.5}
-                        sx={{
-                          marginLeft: "20px",
-                        }}
-                      />
-                    </Typography>
-                  </div>
-                  <Typography
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "800",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    {product.price}$
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {product.description.slice(0, 200)}...
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={handleAddToCart}
+            />
           ))
         ) : (
           <div
