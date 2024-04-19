@@ -12,6 +12,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [ratingFilter, setRatingFilter] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +34,9 @@ const Home = () => {
   const handleRatingChange = (event) => {
     setRatingFilter(event.target.value);
   };
+  const handleCategoryChange = (event) => {
+    setCategoryFilter(event.target.value);
+  };
 
   const filteredProducts = products.filter((product) => {
     const titleMatch = product.title
@@ -40,7 +44,9 @@ const Home = () => {
       .includes(searchValue.toLowerCase());
     const ratingMatch =
       ratingFilter === null || product.rating.rate >= ratingFilter;
-    return titleMatch && ratingMatch;
+    const categoryMatch =
+      categoryFilter === "" || product.category === categoryFilter;
+    return titleMatch && ratingMatch && categoryMatch;
   });
 
   // For modal
@@ -50,6 +56,18 @@ const Home = () => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
+
+  // clearing filter
+  const clearFilters = () => {
+    setSearchValue("");
+    setRatingFilter(null);
+    setCategoryFilter(null);
+  };
+  //for categories
+  const getUniqueCategories = () => {
+    const categories = products.map((product) => product.category);
+    return [...new Set(categories)];
+  };
   return (
     <>
       <form className="max-w-md mx-auto mt-5" onChange={handleInputChange}>
@@ -107,6 +125,10 @@ const Home = () => {
                 border: "2px solid #000",
                 boxShadow: 24,
                 p: 4,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
               }}
             >
               <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -117,15 +139,40 @@ const Home = () => {
                 onChange={handleRatingChange}
                 displayEmpty
                 inputProps={{ "aria-label": "rating" }}
-                style={{ marginTop: "10px" }}
+                style={{ marginTop: "10px", width: "100%" }}
               >
                 <MenuItem value={null}>All Ratings</MenuItem>
                 {[1, 2, 3, 4, 5].map((rating) => (
                   <MenuItem key={rating} value={rating}>
-                    Rating {rating} and above
+                    {rating <= 4
+                      ? `Rating ${rating} and above`
+                      : `Rating ${rating}`}
                   </MenuItem>
                 ))}
               </Select>
+              <Select
+                value={categoryFilter}
+                onChange={handleCategoryChange}
+                displayEmpty
+                inputProps={{ "aria-label": "category" }}
+                style={{ marginTop: "10px", width: "100%" }}
+              >
+                <MenuItem value="">All Categories</MenuItem>
+                {getUniqueCategories().map((category) => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Button
+                sx={{
+                  marginTop: "20px",
+                }}
+                variant="contained"
+                onClick={handleClose}
+              >
+                Done
+              </Button>
             </Box>
           </Modal>
         </div>
@@ -214,7 +261,24 @@ const Home = () => {
             </div>
           ))
         ) : (
-          <h1>No products found</h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <h1>No products found</h1>
+            <Button
+              variant="contained"
+              style={{ marginTop: "20px" }}
+              onClick={clearFilters}
+            >
+              {" "}
+              Clear Filter{" "}
+            </Button>
+          </div>
         )}
       </div>
     </>
