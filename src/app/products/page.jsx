@@ -1,26 +1,23 @@
-// pages/index.js
-
-import Button from "@mui/material/Button";
+"use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
-import { useEffect, useState } from "react";
-
-import { BsSearch } from "react-icons/bs";
+import { Rating } from "@mui/material";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("https://fakestoreapi.com/products");
         setProducts(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -28,11 +25,18 @@ const Home = () => {
 
     fetchData();
   }, []);
-  console.log([products]);
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   return (
     <>
-      <form className="max-w-md mx-auto mt-3">
+      <form className="max-w-md mx-auto mt-5" onChange={handleInputChange}>
         <label
           htmlFor="default-search"
           className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -81,8 +85,8 @@ const Home = () => {
           margin: "10px",
         }}
       >
-        {products.map((product) => (
-          <div>
+        {filteredProducts.map((product) => (
+          <div key={product.id}>
             <Card
               key={product.id}
               className="card"
@@ -96,7 +100,7 @@ const Home = () => {
               <CardMedia
                 className="product-card"
                 component="img"
-                alt={name}
+                alt={product.title}
                 height="140"
                 src={product.image}
                 sx={{ objectFit: "contain", height: "150px" }}
@@ -114,6 +118,15 @@ const Home = () => {
                 >
                   <Typography gutterBottom variant="h5" component="div">
                     {product.title.slice(0, 10)}...
+                    <Rating
+                      name="read-only"
+                      value={product.rating.rate}
+                      readOnly
+                      precision={0.5}
+                      sx={{
+                        marginLeft: "20px",
+                      }}
+                    />
                   </Typography>
                 </div>
                 <Typography
@@ -136,13 +149,7 @@ const Home = () => {
                   alignItems: "flex-end",
                 }}
               >
-                <Button size="small" sx={{ color: "green", fontSize: "15px" }}>
-                  Explore{" "}
-                  <span style={{ marginLeft: "10px" }}>
-                    {" "}
-                    <BsSearch size={18} />
-                  </span>
-                </Button>
+                <button className="explore-button">Explore</button>
               </CardActions>
             </Card>
           </div>
