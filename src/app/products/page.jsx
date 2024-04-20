@@ -4,8 +4,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
-import { useRouter } from "next/router";
-import { FcCancel } from "react-icons/fc";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -15,8 +13,6 @@ const Home = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestionValue, setSuggestionValue] = useState("");
   const [sortOrder, setSortOrder] = useState(null);
-
-  // const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +65,7 @@ const Home = () => {
   const clearFilters = () => {
     setSearchValue("");
     setRatingFilter(null);
-    setCategoryFilter(null);
+    setCategoryFilter("");
   };
   //for categories
   const getUniqueCategories = () => {
@@ -89,11 +85,7 @@ const Home = () => {
   } else if (sortOrder === "desc") {
     sortedProducts = sortedProducts.sort((a, b) => b.price - a.price);
   }
-  //for cart
-  const handleAddToCart = (product) => {
-    setCart([...cart, product]);
-    router.push("/cart");
-  };
+
   return (
     <>
       <div
@@ -243,11 +235,7 @@ const Home = () => {
       >
         {sortedProducts.length > 0 ? (
           sortedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
+            <ProductCard key={product.id} product={product} />
           ))
         ) : (
           <div
