@@ -9,6 +9,7 @@ cd hyteno-nextjs-frontend-task
 Install Dependencies
 ```bash
 npm i
+npm i axios
 npm install @mui/material @emotion/react @emotion/styled
 # or
 yarn add @mui/material @emotion/react @emotion/styled
