@@ -6,8 +6,8 @@ clone the repository
 https://github.com/nischal119/hyteno-nextjs-frontend-task.git
 cd hyteno-nextjs-frontend-task
 ```
-```bash
 Install Dependencies
+```bash
 npm i
 npm install @mui/material @emotion/react @emotion/styled
 # or
