@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import {
   Button,
   Card,
@@ -18,6 +17,11 @@ const ProductCard = ({ product, onAddToCart }) => {
         borderRadius: "10px",
         margin: "20px 10px",
         minHeight: "400px",
+        transition: "transform 0.3s ease",
+        "&:hover": {
+          transform: "scale(1.05)", // Increase scale on hover
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)", // Add shadow on hover
+        },
       }}
     >
       <CardMedia

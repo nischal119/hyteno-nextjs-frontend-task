@@ -249,6 +249,7 @@ const Home = () => {
             <h1>No products found</h1>
             <Button
               variant="contained"
+              className=" bg-blue-700 "
               style={{ marginTop: "20px" }}
               onClick={clearFilters}
             >

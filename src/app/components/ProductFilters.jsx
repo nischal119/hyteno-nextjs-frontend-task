@@ -63,6 +63,7 @@ const ProductFilters = ({
       </Select>
       <Button
         variant="contained"
+        className=" bg-blue-700 "
         style={{ marginTop: "20px" }}
         onClick={handleClose}
       >
